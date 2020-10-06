@@ -1,10 +1,23 @@
 import sys
 import socketserver
-from http.server import SimpleHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-httpd = socketserver.TCPServer(("", 8081), SimpleHTTPRequestHandler)
+class AWServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes("Ohai world!", "utf-8"))
+        
 
-print("Serving at port 8081")
-httpd.serve_forever()
+aw_server = HTTPServer(("", 8081), AWServer)
+
+try:
+    aw_server.serve_forever()
+except:
+    pass
+
+aw_server.server_close()
+
 
 
